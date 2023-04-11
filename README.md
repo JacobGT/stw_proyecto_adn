@@ -11,18 +11,20 @@ __________________________________________
     * Solicitar datos de los productos a tienda [Grupo Jonathan]
 * Generar manifiesto de importación
     * Solicitar datos de póliza a Logística [Grupo k]
-    ------------[DATOS - MANIFIESTO - RECIBIDO]----------
-    Nombre Persona - Cliente (comprador)
-    Descripción del producto
-    Valor del producto
+    
+    ------------[DATOS - MANIFIESTO - RECIBIDO - ESENCIAL]----------
+    - Nombre Persona - Cliente (comprador)
+    - Descripción del producto
+    - Valor del producto
 * Enviar Manifiesto Procesado a por un web servicie a Logística
     * Generar Mail adjuntado PDF del manifiesto
-    ------------[DATOS - MANIFIESTO - ENVIAR]----------
-    Nombre Persona - Cliente (comprador)
-    Descripción del producto
-    Valor del producto
-    Percentage
-    Araceli
+    
+    ------------[DATOS - MANIFIESTO - ENVIAR - ESENCIAL]----------
+    - Nombre Persona - Cliente (comprador)
+    - Descripción del producto
+    - Valor del producto
+    - Percentage
+    - Araceli
 __________________________________________
 
 ### Notas Adicionales:
