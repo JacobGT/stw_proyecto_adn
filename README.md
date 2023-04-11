@@ -24,7 +24,7 @@ __________________________________________
     - Descripción del producto
     - Valor del producto
     - Percentage
-    - Araceli
+    - Aracel
 __________________________________________
 
 ### Notas Adicionales:
