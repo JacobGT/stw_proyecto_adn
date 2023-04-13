@@ -9,7 +9,7 @@ class indexController extends Controller{
             $this->view->rendering('index');
             $this->view->template='admin';
         }else{
-            $this->view->template='store';
+            $this->view->template='main';
             $this->view->rendering('index');
         }
     }

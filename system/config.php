@@ -5,12 +5,12 @@ if($_SERVER['HTTP_HOST']=='localhost'){
     define('USER','root');
     define('PASSWORD','');
     define('DB_NAME','db_uspgcoders');
-    define('BASE_URL','http://localhost/(P4)_proyecto_mgt/');
+    define('BASE_URL','http://localhost/(STW)_proyecto_adn/');
 }else{
-    define('BASE_URL','https://mygametime.uspgcoders.site/');
+    define('BASE_URL','https://www.aduana.yapasenosinge.syswebgroup.online/');
     define('HOST', 'localhost');
-    define('USER','n4p6n7r2_mygame');
-    define('PASSWORD','ucK)GT[&KS4c');
-    define('DB_NAME','n4p6n7r2_mygametime');   
+    define('USER','syswebgr_admin');
+    define('PASSWORD','uspg@admin123');
+    define('DB_NAME','syswebgr_db_yaPasenosInge');   
 }
 ?>
