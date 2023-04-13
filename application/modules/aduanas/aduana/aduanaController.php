@@ -17,7 +17,7 @@ class aduanaController extends Controller{
 
         // Se establecen los parametros para el cURL
         curl_setopt_array($ch, array(
-            CURLOPT_URL => 'https://www.aduana.yapasenosinge.syswebgroup.online/assets/ws_tmp.php',
+            CURLOPT_URL => 'http://www.chevsko.kevin.syswebgroup.online/webservice_01.php',
             CURLOPT_RETURNTRANSFER => true
         ));
 
@@ -61,8 +61,6 @@ class aduanaController extends Controller{
         $resultado = $this->consultarPoliza();
         $arancel = $this->consultar_arancel();
         $manifiesto_procesado = array();// Array que contendra la informacion ya procesada
-        
-       echo $resultado;
 
         foreach($resultado as $clave => $item){
 
