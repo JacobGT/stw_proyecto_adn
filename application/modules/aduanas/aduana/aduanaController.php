@@ -74,9 +74,9 @@ class aduanaController extends Controller{
         // Movernos a la derecha
         $pdf->Cell(70);
         // Título
-        $pdf->Cell(140,10,'Detalles de la POLIZA',0,0,'C');
+        $pdf->Cell(140,10,'POLIZA ADUANERA',0,0,'C');
         // Salto de línea
-        $pdf->Ln(20);
+        $pdf->Ln(10);
         $fechaactual = 'Fecha: '.date('d/m/Y');
         $pdf->SetFont('Arial','',12);
         $pdf->Cell(0,10,$fechaactual,0,0,'');
@@ -96,7 +96,7 @@ class aduanaController extends Controller{
         // Colores de los bordes, fondo y texto
         $pdf->SetDrawColor(0,80,180);
         $pdf->SetFillColor(189,236,182);
-        $pdf->Cell(10,6,'id',1,0,'C',true);
+        $pdf->Cell(10,6,'ID',1,0,'C',true);
         $pdf->Cell(108,6,utf8_decode('Descripción del Producto'),1,0,'C',true);
         $pdf->Cell(30,6,'Precio',1,0,'C',true);
         $pdf->Cell(15,6,'%',1,0,'C',true);
@@ -107,11 +107,11 @@ class aduanaController extends Controller{
 
         $pdf->SetFont('Arial','',10);
         $pdf->SetFillColor(226,240,251);
-        for ($x = 0; $x < 10 /*$nurmeroDatos*/; $x++) {
+        for ($x = 0; $x < 40 /*$nurmeroDatos*/; $x++) {
             $datosProducto = $datos[$x];
             
-            $pdf->Cell(10,5,$datosProducto['id_manifiesto'],1,0,'',true);
-            $pdf->Cell(108,5,$datosProducto['descripcion_producto'],1,0,'C',true);
+            $pdf->Cell(10,5,$datosProducto['id_manifiesto'],1,0,'C',true);
+            $pdf->Cell(108,5,$datosProducto['descripcion_producto'],1,0,'L',true);
             $pdf->Cell(30,5,$datosProducto['valor_producto'],1,0,'C',true);
             $pdf->Cell(15,5,$datosProducto['porcentaje_arancel']*100 .' %',1,0,'C',true);
             $pdf->Cell(30,5,round($datosProducto['valor_producto']*$datosProducto['porcentaje_arancel'],2),1,0,'C',true);
@@ -144,23 +144,19 @@ class aduanaController extends Controller{
         $arancel = $this->consultar_arancel();
         $manifiesto_procesado = array();// Array que contendra la informacion ya procesada
 
+        $t_array = sizeof($arancel);
+
+      
         foreach($resultado as $clave => $item){
 
             $contador = 0;
             $procentaje_arancel = 0.00;
 
-            //var_dump($arancel[$contador]["descripcion"]);
-
-            while (current($arancel)) {
-                
-                if (strtolower($arancel[$contador]["descripcion"]) == "cpu"){//cambiar "cpu" por $resultado[$clave]["categoria_producto"]
-                    $procentaje_arancel = $arancel[$contador]["porcentaje_arancel"];
+            for ($x = 0; $x < $t_array; $x++) {
+                if (strtolower($arancel[$x]["descripcion"]) == "ups"){//cambiar "cpu" por $resultado[$clave]["categoria_producto"]
+                    $procentaje_arancel = $arancel[$x]["porcentaje_arancel"];
                     break;
-                }else{
-                    $contador = $contador + 1;
                 }
-
-                next($arancel);
             }
 
             $color = $this->marcar_color(rand(0,1)); // Se asgina un color aleatorio al paquete
@@ -173,7 +169,7 @@ class aduanaController extends Controller{
             $manifiesto_procesado[$clave]["valor_total"] = $resultado[$clave]["valor_producto"] + ($resultado[$clave]["valor_producto"] * $procentaje_arancel);
             $manifiesto_procesado[$clave]["color_paquete"] = $color;
         }
-        $this->generar_poliza($manifiesto_procesado);
+        //$this->generar_poliza($manifiesto_procesado);
   
         return $manifiesto_procesado;
     }
