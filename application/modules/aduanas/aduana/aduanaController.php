@@ -54,124 +54,65 @@ class aduanaController extends Controller{
         return $datos;
     }
 
-    public function generar_poliza($array_resultado){
-        /*$this->modelo->id_tabla = 'id_producto';
-        $this->modelo->tabla = 'opr_carrito';
-        $params=array('operacion'=>'consultar_productos_carrito');
-        $resultado =$this->modelo->ejecutar_sql($params);
-        */
-        $datos = $array_resultado;            
-        $nurmeroDatos = sizeof($datos);
-
-        $pdf = new FPDF('L');
-        $pdf->AddPage();
-        $pdf->SetTitle('Poliza ADUANERA');
-        $pdf->SetFont('Arial','B',16);
-        
-        //Header
-        // Arial bold 15
-        $pdf->SetFont('Arial','B',20);
-        // Movernos a la derecha
-        $pdf->Cell(70);
-        // Título
-        $pdf->Cell(140,10,'POLIZA ADUANERA',0,0,'C');
-        // Salto de línea
-        $pdf->Ln(10);
-        $fechaactual = 'Fecha: '.date('d/m/Y');
-        $pdf->SetFont('Arial','',12);
-        $pdf->Cell(0,10,$fechaactual,0,0,'');
-        //$pdf->Image(BASE_URL.'layout/store/assets/img/logo/logo.png',150,35,40);
-        $pdf->Ln(5);
-        $pdf->Cell(0,10,'email: info@uspgcoders.site',0,0,'');
-        $pdf->Ln(5);
-
-        $poliza_no = 'generarPoliza';
-        $pdf->Cell(0,10,'No. Orden: '.$poliza_no,0,0,'');
-        $pdf->Ln(5);
-        $comprador = 'aquiVaElComprador';
-        $pdf->Cell(0,10,'Comprador: '.$nurmeroDatos,0,0,'');
-
-        $pdf->Ln(10);
-        $pdf->SetFont('Arial','B',12);
-        // Colores de los bordes, fondo y texto
-        $pdf->SetDrawColor(0,80,180);
-        $pdf->SetFillColor(189,236,182);
-        $pdf->Cell(10,6,'ID',1,0,'C',true);
-        $pdf->Cell(108,6,utf8_decode('Descripción del Producto'),1,0,'C',true);
-        $pdf->Cell(30,6,'Precio',1,0,'C',true);
-        $pdf->Cell(15,6,'%',1,0,'C',true);
-        $pdf->Cell(30,6,'Arancel',1,0,'C',true);
-        $pdf->Cell(40,6,'Precio Final',1,0,'C',true);
-        $pdf->Cell(45,6,'Color Paquete',1,0,'C',true);
-        $pdf->Ln(10);
-
-        $pdf->SetFont('Arial','',10);
-        $pdf->SetFillColor(226,240,251);
-        for ($x = 0; $x < 40 /*$nurmeroDatos*/; $x++) {
-            $datosProducto = $datos[$x];
-            
-            $pdf->Cell(10,5,$datosProducto['id_manifiesto'],1,0,'C',true);
-            $pdf->Cell(108,5,$datosProducto['descripcion_producto'],1,0,'L',true);
-            $pdf->Cell(30,5,$datosProducto['valor_producto'],1,0,'C',true);
-            $pdf->Cell(15,5,$datosProducto['porcentaje_arancel']*100 .' %',1,0,'C',true);
-            $pdf->Cell(30,5,round($datosProducto['valor_producto']*$datosProducto['porcentaje_arancel'],2),1,0,'C',true);
-            $pdf->Cell(40,5,$datosProducto['valor_total'],1,0,'C',true);
-            $pdf->Cell(45,5,$datosProducto['color_paquete'],1,0,'C',true);
-            $pdf->Ln();
-            //$total_prodcutos = $total_prodcutos + floatval($datosProducto['precio']);
-        }
-        $pdf->SetFont('Arial','B',15);
-        //$pdf->Cell(160,10,'Total',1,0,'R',0);
-        $pdf->SetFillColor(253,238,238);
-        //$pdf->Cell(30,10,'$ '.sprintf('%0.2f',$total_prodcutos),1,2,'C',true);
-        
-        
-        // Posición: a 1,5 cm del final
-        $pdf->SetY(266);
-        // Arial italic 8
-        $pdf->SetFont('Arial','I',8);
-        // Número de página
-        //$pdf->Cell(0,10,'Gracias por tu compra!',0,0,'C');
-        
-        $pdf->Output();
-    } 
-
     public function procesarDatos(){
-        //$consulta = new webServices_consulta();
+        $poliza = new polizaController();
 
         //Procesamiento de los datos
         $resultado = $this->consultarPoliza();
         $arancel = $this->consultar_arancel();
-        $manifiesto_procesado = array();// Array que contendra la informacion ya procesada
+        $manifiesto_procesado_verde = array();// Array que contendra la informacion ya procesada
+        $manifiesto_procesado_rojo = array();// Array que contendra la informacion ya procesada
 
         $t_array = sizeof($arancel);
 
-      
+        $no_orden = strtotime("now").rand(1, 999);
+
         foreach($resultado as $clave => $item){
 
-            $contador = 0;
             $procentaje_arancel = 0.00;
 
             for ($x = 0; $x < $t_array; $x++) {
-                if (strtolower($arancel[$x]["descripcion"]) == "ups"){//cambiar "cpu" por $resultado[$clave]["categoria_producto"]
+                if (strtolower($arancel[$x]["descripcion"]) == strtolower($resultado[$clave]["tipo_producto"])){//cambiar "cpu" por ]
                     $procentaje_arancel = $arancel[$x]["porcentaje_arancel"];
                     break;
                 }
             }
 
+
             $color = $this->marcar_color(rand(0,1)); // Se asgina un color aleatorio al paquete
+
+            
+            if($color == "verde"){
+
+                $manifiesto_procesado_verde[$clave]["id_manifiesto"] = $resultado[$clave]["id_manifiesto"];
+                $manifiesto_procesado_verde[$clave]["id_detalle"] = $resultado[$clave]["id_detalle"];
+                $manifiesto_procesado_verde[$clave]["nombre_comprador"] = $resultado[$clave]["nombre_comprador"];
+                $manifiesto_procesado_verde[$clave]["descripcion_producto"] = $resultado[$clave]["descripcion_producto"];
+                $manifiesto_procesado_verde[$clave]["valor_producto"] = floatval($resultado[$clave]["valor_producto"]);
+                $manifiesto_procesado_verde[$clave]["no_orden"] = $no_orden;
+                $manifiesto_procesado_verde[$clave]["porcentaje_arancel"] = floatval($procentaje_arancel);
+                $manifiesto_procesado_verde[$clave]["color_paquete"] = $color;
+                $manifiesto_procesado_verde[$clave]["tipo_producto"] = $resultado[$clave]["tipo_producto"];
+
+            }else{
+                $manifiesto_procesado_rojo[$clave]["id_manifiesto"] = $resultado[$clave]["id_manifiesto"];
+                $manifiesto_procesado_rojo[$clave]["id_manifiesto"] = $resultado[$clave]["id_detalle"];
+                $manifiesto_procesado_rojo[$clave]["nombre_comprador"] = $resultado[$clave]["nombre_comprador"];
+                $manifiesto_procesado_rojo[$clave]["descripcion_producto"] = $resultado[$clave]["descripcion_producto"];
+                $manifiesto_procesado_rojo[$clave]["valor_producto"] = floatval($resultado[$clave]["valor_producto"]);
+                $manifiesto_procesado_rojo[$clave]["no_orden"] = $no_orden;
+                $manifiesto_procesado_rojo[$clave]["porcentaje_arancel"] = floatval($procentaje_arancel);
+                $manifiesto_procesado_rojo[$clave]["color_paquete"] = $color;
+                $manifiesto_procesado_rojo[$clave]["tipo_producto"] = $resultado[$clave]["tipo_producto"];
+            }
             //Se agrega la info al nuevo array
-            $manifiesto_procesado[$clave]["id_manifiesto"] = $resultado[$clave]["id_manifiesto"];
-            $manifiesto_procesado[$clave]["nombre_comprador"] = $resultado[$clave]["nombre_comprador"];
-            $manifiesto_procesado[$clave]["descripcion_producto"] = $resultado[$clave]["descripcion_producto"];
-            $manifiesto_procesado[$clave]["valor_producto"] = floatval($resultado[$clave]["valor_producto"]);
-            $manifiesto_procesado[$clave]["porcentaje_arancel"] = floatval($procentaje_arancel);
-            $manifiesto_procesado[$clave]["valor_total"] = $resultado[$clave]["valor_producto"] + ($resultado[$clave]["valor_producto"] * $procentaje_arancel);
-            $manifiesto_procesado[$clave]["color_paquete"] = $color;
+            
         }
-        //$this->generar_poliza($manifiesto_procesado);
+        
+        $poliza->generar_poliza(array_values($manifiesto_procesado_verde),'[VERDE]');
+        $poliza->generar_poliza(array_values($manifiesto_procesado_rojo),'[ROJO]');
   
-        return $manifiesto_procesado;
+        return 'Datos Procesados Con Exito';
     }
 }
 

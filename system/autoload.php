@@ -10,7 +10,7 @@
             require_once LIB_PATH.strtolower($clase).'.php';
         }
     }
-
+    
     spl_autoload_register('autoloadLibraries');
     spl_autoload_register('autoloadCore');
 ?>
