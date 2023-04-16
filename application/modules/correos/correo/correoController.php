@@ -91,7 +91,7 @@ class correoController extends Controller{
 			
 		    
 		    $mail->setFrom('kevin.secay@syswebgroup.online', 'Aduana SysWebGroup');
-		    $mail->addAddress('keseprs@gmail.com');
+		    $mail->addAddress('polizas@aduana.yapasenosinge.syswebgroup.online');
 		    $mail->addAddress('kevin.secay@syswebgroup.online', 'Aduana SysWebGroup');   
 
 		    
