@@ -1,5 +1,4 @@
 <?php
-
 class aduanaController extends Controller{
 	
 	public function __construct(){
@@ -12,45 +11,16 @@ class aduanaController extends Controller{
 		
 	}
 
-    /*public function datos_poliza(){
+    public function datos_poliza(){
 
-        if(!empty($_POST["manifiesto"])){
-            $json = array();
-            $json[] = array(
-                'manifiesto' => "wenas bb"
-            );
-
-            $respuesta = json_encode($json);
-
-            echo $respuesta;
+        $data = json_decode(file_get_contents('php://input'), true);
+    
+        if(!empty($data)){
+            echo $this->procesarDatos($data);
+        }else{
+            echo 'no hay datos';
         }
-
-    }*/
-	
-	public function consultarPoliza(){
-        
-        $ch = curl_init(); //Inicializa la sesión cURL
-
-        // Se establecen los parametros para el cURL
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => 'http://www.chevsko.kevin.syswebgroup.online/webservice_01.php',
-            CURLOPT_RETURNTRANSFER => true
-        ));
-
-        // Elimnar Lineas: -----------------------------
-        /*/Nomas para que no joda con el SSL en el localhost del WAMP >:v
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-         ---------------------------------------------*/
-
-        $response = curl_exec($ch); //Se ejecuta el cURL
-
-        if (curl_errno($ch)) 
-            echo curl_error($ch); //Comprobacion de errores
-        else 
-            curl_close($ch);
-            return json_decode($response, true); //Transforma el JSON en un Array, para retornarlo
-
+    
     }
 
     public function marcar_color($a_valor){
@@ -70,12 +40,12 @@ class aduanaController extends Controller{
         return $datos;
     }
 
-    public function procesarDatos(){
+    public function procesarDatos($data){
         $poliza = new polizaController();
         $correo = new correoController();
 
         //Procesamiento de los datos
-        $resultado = $this->consultarPoliza();
+        $resultado = $data;
         $arancel = $this->consultar_arancel();
         $manifiesto_procesado_verde = array();// Array que contendra la informacion ya procesada
         $manifiesto_procesado_rojo = array();// Array que contendra la informacion ya procesada
@@ -126,14 +96,15 @@ class aduanaController extends Controller{
             
         }
         
-        //$poliza->generar_poliza(array_values($manifiesto_procesado_verde),'[VERDE]');
-        //$poliza->generar_poliza(array_values($manifiesto_procesado_rojo),'[ROJO]');
-        //$correo->enviar_correo($no_orden);
+        $poliza->generar_poliza(array_values($manifiesto_procesado_verde),'[VERDE]');
+        $poliza->generar_poliza(array_values($manifiesto_procesado_rojo),'[ROJO]');
+        $correo->enviar_correo($no_orden);
 
-        return 'Datos Procesados Con Exito';
+        return 'Datos Recibidos y Procesados con Exito';
     }
 }
 
 $procesard = new aduanaController();
-echo json_encode($procesard -> procesarDatos());
+echo $procesard->datos_poliza();
+
 ?>
