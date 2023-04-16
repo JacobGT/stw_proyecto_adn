@@ -15,6 +15,7 @@ try {
     require_once LIB_PATH.'phpmailer/src/Exception.php';
     require_once LIB_PATH.'fpdf/fpdf.php';
     require_once APP_PATH.'modules/aduanas/poliza/polizaController.php';
+    require_once APP_PATH.'modules/correos/correo/correoController.php';
 
     sesion::init();
     

@@ -1,4 +1,5 @@
 <?php
+
 class aduanaController extends Controller{
 	
 	public function __construct(){
@@ -10,6 +11,21 @@ class aduanaController extends Controller{
 	public function index(){
 		
 	}
+
+    /*public function datos_poliza(){
+
+        if(!empty($_POST["manifiesto"])){
+            $json = array();
+            $json[] = array(
+                'manifiesto' => "wenas bb"
+            );
+
+            $respuesta = json_encode($json);
+
+            echo $respuesta;
+        }
+
+    }*/
 	
 	public function consultarPoliza(){
         
@@ -56,6 +72,7 @@ class aduanaController extends Controller{
 
     public function procesarDatos(){
         $poliza = new polizaController();
+        $correo = new correoController();
 
         //Procesamiento de los datos
         $resultado = $this->consultarPoliza();
@@ -109,15 +126,14 @@ class aduanaController extends Controller{
             
         }
         
-        $poliza->generar_poliza(array_values($manifiesto_procesado_verde),'[VERDE]');
-        $poliza->generar_poliza(array_values($manifiesto_procesado_rojo),'[ROJO]');
-  
+        //$poliza->generar_poliza(array_values($manifiesto_procesado_verde),'[VERDE]');
+        //$poliza->generar_poliza(array_values($manifiesto_procesado_rojo),'[ROJO]');
+        //$correo->enviar_correo($no_orden);
+
         return 'Datos Procesados Con Exito';
     }
 }
 
 $procesard = new aduanaController();
 echo json_encode($procesard -> procesarDatos());
-//var_dump($procesard -> procesarDatos());
-
 ?>
